@@ -23,6 +23,8 @@ class IssuesController extends Controller
     public function create()
     {
         //
+        $computers = Computer::all(); // BẮT BUỘC
+        return view('issues.create', compact('computers'));
     }
 
     /**
@@ -30,7 +32,17 @@ class IssuesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Issue::create([
+        'computer_id' => $request->computer_id,
+        'reported_by' => $request->reported_by,
+        'description' => $request->description,
+        'status' => $request->status,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->route('issues.index')
+        ->with('success', 'Thêm sự cố thành công');
     }
 
     /**
@@ -47,6 +59,9 @@ class IssuesController extends Controller
     public function edit(string $id)
     {
         //
+        $issue = Issue::findOrFail($id);
+        $computers = Computer::all();
+        return view('issues.edit', compact('issue', 'computers'));
     }
 
     /**
