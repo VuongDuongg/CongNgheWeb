@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1>Vuong</h1>
-  @foreach($posts as $post)
-    <p>{{ $post->content }}</p>
-  @endforeach
-</body>
-</html>
+@extends('layouts.app')
+
+@section('content')
+
+    <h2>{{ $page_title }}</h2>
+    <p>{{ $page_description }}</p>
+
+    <h3>Danh sách công việc (Lấy từ Controller):</h3>
+
+    <ul>
+        @foreach($tasks as $task)
+            <li>{{ $task }}</li>
+        @endforeach
+    </ul>
+
+@endsection
