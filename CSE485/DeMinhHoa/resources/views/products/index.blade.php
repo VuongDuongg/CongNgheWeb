@@ -5,14 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Sinh Viên</title>
-    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 </head>
 
 <body>
     <div class="container mt-5">
-        <h1>Danh Sách Sinh Viên</h1>
-        <a href="{{ route('students.create') }}" class="btn btn-primary mb-3">Thêm Sinh Viên Mới</a>
+        <h1>List product</h1>
+        <div class ="justify-content-end d-flex">
+            <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Them san pham</a>
+        </div>
         @if (session('success'))
             <div class="alert alert-success" id="alert-success">
                 {{ session('success') }}
@@ -28,34 +30,33 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Mã Sinh Viên</th>
-                    <th>Tên</th>
-                    <th>Email</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Lớp</th>
-                    <th>Hành Động</th>
+                    <th>Ten san pham</th>
+                    <th>Mo ta</th>
+                    <th>Gia</th>
+                    <th>Ten cua hang</th>
+                    <th>Ngay tao</th>
+                    <th>Hanh dong</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($students as $student)
+                @forelse($products as $product)
                     <tr>
-                        <td>{{ $student->id }}</td>
-                        <td>{{ $student->student_code }}</td>
-                        <td>{{ $student->name }}</td>
-                        <td>{{ $student->email }}</td>
-                        <td>{{ $student->phone }}</td>
-                        <td>{{ $student->classs->class_name ?? 'N/A' }}</td>
+                        <td>{{ $product->name }}</td>
+                        <td>{{ $product->description }}</td>
+                        <td>{{ $product->price }}</td>
+                        <td>{{ $product->store->name }}</td>
+                        <td>{{ $product->created_at-> toDateString() }}</td>
                         <td>
-                            <a href="{{ route('students.show', $student->id) }}" class="btn btn-info btn-sm">Xem</a>
-                            <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+
+                            <!-- Xóa (nếu muốn) -->
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ $student->id }}">
+                                data-bs-target="#deleteModal{{ $product->id }}">
                                 Xóa
                             </button>
 
                             <!-- Modal xác nhận xóa -->
-                            {{-- <div class="modal fade" id="deleteModal{{ $student->id }}" tabindex="-1">
+                            <div class="modal fade" id="deleteModal{{ $product->id }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
 
@@ -66,8 +67,8 @@
 
                                         <div class="modal-body">
                                             <p>
-                                                Bạn có chắc chắn muốn xóa sách
-                                                <strong>{{ $student->name }}</strong> không?
+                                                Bạn có chắc chắn muốn xóa sản phẩm
+                                                <strong>{{ $product->name }}</strong> không?
                                             </p>
                                             <p class="text-danger mb-0">
                                                 Hành động này không thể hoàn tác!
@@ -79,7 +80,7 @@
                                                 Hủy
                                             </button>
 
-                                            <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                                            <form action="{{ route('products.destroy', $product->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">
@@ -90,42 +91,40 @@
 
                                     </div>
                                 </div>
-                            </div> --}}
-
+                            </div>
 
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center">Không tìm thấy sinh viên nào.</td>
+                        <td colspan="7" class="text-center">Không tìm thấy san pham nào.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
-        @if ($students->hasPages())
+
+        @if ($products->hasPages())
             <div class="d-flex justify-content-center align-items-center mt-3">
 
                 {{-- Nút Trước --}}
-                @if ($students->onFirstPage())
+                @if ($products->onFirstPage())
                     <span class="btn btn-secondary disabled me-2">Trước</span>
                 @else
-                    <a href="{{ $students->previousPageUrl() }}" class="btn btn-primary me-2">Trước</a>
+                    <a href="{{ $products->previousPageUrl() }}" class="btn btn-primary me-2">Trước</a>
                 @endif
 
                 {{-- Các số trang --}}
-                @for ($i = 1; $i <= $students->lastPage(); $i++)
-                    @if ($i == $students->currentPage())
+                @for ($i = 1; $i <= $products->lastPage(); $i++)
+                    @if ($i == $products->currentPage())
                         <span class="btn btn-success mx-1">{{ $i }}</span>
                     @else
-                        <a href="{{ $students->url($i) }}" class="btn btn-outline-primary mx-1">
-                            {{ $i }}
-                        </a>
+                        <a href="{{ $products->url($i) }}" class="btn btn-outline-primary mx-1">{{ $i }}</a>
                     @endif
                 @endfor
 
                 {{-- Nút Tiếp --}}
-                @if ($students->hasMorePages())
-                    <a href="{{ $students->nextPageUrl() }}" class="btn btn-primary ms-2">Tiếp</a>
+                @if ($products->hasMorePages())
+                    <a href="{{ $products->nextPageUrl() }}" class="btn btn-primary ms-2">Tiếp</a>
                 @else
                     <span class="btn btn-secondary disabled ms-2">Tiếp</span>
                 @endif
@@ -134,7 +133,7 @@
         @endif
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

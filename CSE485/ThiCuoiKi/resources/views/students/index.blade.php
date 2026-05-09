@@ -4,15 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Sinh Viên</title>
-    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <title>List Students</title>
+    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 </head>
 
 <body>
     <div class="container mt-5">
-        <h1>Danh Sách Sinh Viên</h1>
-        <a href="{{ route('students.create') }}" class="btn btn-primary mb-3">Thêm Sinh Viên Mới</a>
+        <h1>List student</h1>
+        <div class ="justify-content-end d-flex">
+            <a href="{{ route('students.create') }}" class="btn btn-primary mb-3">Create student</a>
+        </div>
         @if (session('success'))
             <div class="alert alert-success" id="alert-success">
                 {{ session('success') }}
@@ -28,34 +30,31 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Mã Sinh Viên</th>
-                    <th>Tên</th>
+                    <th>Full name</th>
+                    <th>School</th>
                     <th>Email</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Lớp</th>
-                    <th>Hành Động</th>
+                    <th>Phone</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($students as $student)
                     <tr>
-                        <td>{{ $student->id }}</td>
-                        <td>{{ $student->student_code }}</td>
-                        <td>{{ $student->name }}</td>
+                        <td>{{ $student->full_name }}</td>
+                        <td>{{ $student->school->name }}</td>
                         <td>{{ $student->email }}</td>
                         <td>{{ $student->phone }}</td>
-                        <td>{{ $student->classs->class_name ?? 'N/A' }}</td>
                         <td>
-                            <a href="{{ route('students.show', $student->id) }}" class="btn btn-info btn-sm">Xem</a>
                             <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+
+                            <!-- Xóa (nếu muốn) -->
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal{{ $student->id }}">
                                 Xóa
                             </button>
 
                             <!-- Modal xác nhận xóa -->
-                            {{-- <div class="modal fade" id="deleteModal{{ $student->id }}" tabindex="-1">
+                            <div class="modal fade" id="deleteModal{{ $student->id }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
 
@@ -66,8 +65,8 @@
 
                                         <div class="modal-body">
                                             <p>
-                                                Bạn có chắc chắn muốn xóa sách
-                                                <strong>{{ $student->name }}</strong> không?
+                                                Bạn có chắc chắn muốn xóa phong
+                                                <strong>{{ $student->full_name }}</strong> không?
                                             </p>
                                             <p class="text-danger mb-0">
                                                 Hành động này không thể hoàn tác!
@@ -79,7 +78,7 @@
                                                 Hủy
                                             </button>
 
-                                            <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                                            <form action="{{ route('students.destroy', $student->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">
@@ -90,18 +89,18 @@
 
                                     </div>
                                 </div>
-                            </div> --}}
-
+                            </div>
 
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center">Không tìm thấy sinh viên nào.</td>
+                        <td colspan="7" class="text-center">Không tìm thấy phong nào.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+
         @if ($students->hasPages())
             <div class="d-flex justify-content-center align-items-center mt-3">
 
@@ -117,9 +116,7 @@
                     @if ($i == $students->currentPage())
                         <span class="btn btn-success mx-1">{{ $i }}</span>
                     @else
-                        <a href="{{ $students->url($i) }}" class="btn btn-outline-primary mx-1">
-                            {{ $i }}
-                        </a>
+                        <a href="{{ $students->url($i) }}" class="btn btn-outline-primary mx-1">{{ $i }}</a>
                     @endif
                 @endfor
 
@@ -134,6 +131,7 @@
         @endif
 
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
